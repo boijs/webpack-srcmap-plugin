@@ -1,6 +1,6 @@
 {
   "name": "webpack-srcmap-plugin",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "output the map file of static files included in html ",
   "main": "index.js",
   "keywords": [
