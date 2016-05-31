@@ -26,6 +26,9 @@ HtmlWebpackSrcmapPlugin.prototype.apply = function(compiler) {
         let _assets = Object.keys(compilation.compilation.assets).filter(function(filename) {
             return _regJS.test(filename) || _regCSS.test(filename);
         });
+
+        let _mapJS = {},
+            _mapCSS = {};
         _assets.map(function(filename) {
             let _arr = filename.split('/');
             let _filename = _arr[_arr.length - 1];
@@ -34,21 +37,25 @@ HtmlWebpackSrcmapPlugin.prototype.apply = function(compiler) {
             if (_this.options.nameWithHash) {
                 if (_regJS.test(filename)) {
                     _key = _filename.split(/\.[a-z0-9]+\.js$/)[0] + '.js';
+                    _mapJS[_key] = _publicName;
                 } else {
                     _key = _filename.split(/\.[a-z0-9]+\.css$/)[0] + '.css';
+                    _mapCSS[_key] = _publicName;
                 }
             } else {
                 if (_regJS.test(filename)) {
                     _key = _filename.split(/\.js$/)[0] + '.js';
+                    _mapJS[_key] = _publicName;
                 } else {
                     _key = _filename.split(/\.css$/)[0] + '.css';
+                    _mapCSS[_key] = _publicName;
                 }
             }
-            _srcmap = Object.assign({}, _srcmap, {
-                [_key]: _publicName
-            });
         });
-
+        _srcmap = Object.assign({}, _srcmap, {
+            'js': _mapJS,
+            'style': _mapCSS
+        });
         fs.writeFileSync(path.resolve(process.cwd(), _this.options.outputfile), JSON.stringify(_srcmap));
         console.log(colors.blue('Map files has been generated sucessfully'));
     });
